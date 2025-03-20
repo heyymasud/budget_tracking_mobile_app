@@ -9,10 +9,12 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useSession } from '@/store/auth/auth-context';
 import { ThemedText } from '@/components/ThemedText';
+import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
+import { ms } from 'react-native-size-matters';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { session, isLoading } = useSession();
+  const { session, isLoading, signOut } = useSession();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
@@ -30,30 +32,68 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
+        tabBarActiveTintColor: Colors[colorScheme ?? "light"].text,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
             // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
+            position: "absolute",
           },
-          default: {},
+          default: {
+            display: "flex",
+            backgroundColor: Colors[colorScheme ?? "light"].background,
+            shadowColor: "transparent",
+            elevation: 0,
+            borderTopWidth: 0,
+          },
         }),
-      }}>
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: Colors[colorScheme ?? "light"].background,
+          shadowColor: "transparent",
+          elevation: 0,
+          borderBottomWidth: 0,
+        },
+        headerStatusBarHeight: 0,
+        headerTitle: "",
+        headerRight: () => (
+          <FontAwesome
+            name="cog"
+            size={ms(24)}
+            color={Colors[colorScheme ?? "light"].primary}
+            onPress={signOut}
+          />
+        ),
+        headerRightContainerStyle: {
+          paddingHorizontal: ms(10),
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Dashboard",
+          tabBarIcon: () => (
+            <FontAwesome
+              name="dashboard"
+              size={ms(24)}
+              color={Colors[colorScheme ?? "light"].primary}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "Transactions",
+          tabBarIcon: () => (
+            <FontAwesome5
+              name="wallet"
+              size={ms(24)}
+              color={Colors[colorScheme ?? "light"].primary}
+            />
+          ),
         }}
       />
     </Tabs>
